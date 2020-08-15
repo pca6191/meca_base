@@ -1,0 +1,6 @@
+build/
+.settings/
+*.d
+*.o
+Debug/
+build_pcenv/
