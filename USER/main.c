@@ -1,70 +1,83 @@
 #include "sys.h"
   /**************************************************************************
-×÷Õß£ºÆ½ºâÐ¡³µÖ®¼Ò
-ÎÒµÄÌÔ±¦Ð¡µê£ºhttp://shop114407458.taobao.com/
+ï¿½ï¿½ï¿½ß£ï¿½Æ½ï¿½ï¿½Ð¡ï¿½ï¿½Ö®ï¿½ï¿½
+ï¿½Òµï¿½ï¿½Ô±ï¿½Ð¡ï¿½ê£ºhttp://shop114407458.taobao.com/
 **************************************************************************/
-u8 Flag_Left,Flag_Right,Flag_Direction=0;   //À¶ÑÀÒ£¿ØÏà¹ØµÄ±äÁ¿
-u8 Flag_Stop=1,Flag_Show=0;                 //Í£Ö¹±êÖ¾Î»ºÍ ÏÔÊ¾±êÖ¾Î» Ä¬ÈÏÍ£Ö¹ ÏÔÊ¾´ò¿ª
-int Encoder_A,Encoder_B,Encoder_C,Encoder_D;          //±àÂëÆ÷µÄÂö³å¼ÆÊý
-long int Position_A,Position_B,Position_C,Position_D,Rate_A,Rate_B,Rate_C,Rate_D; //PID¿ØÖÆÏà¹Ø±äÁ¿
-long int Motor_A,Motor_B,Motor_C,Motor_D;        //µç»úPWM±äÁ¿
-long int Target_A,Target_B,Target_C,Target_D;     //µç»úÄ¿±êÖµ
-int Voltage;                             //µç³ØµçÑ¹²ÉÑùÏà¹ØµÄ±äÁ¿
-float Show_Data_Mb;                      //È«¾ÖÏÔÊ¾±äÁ¿£¬ÓÃÓÚÏÔÊ¾ÐèÒª²é¿´µÄÊý¾Ý                         
-u8 delay_50,delay_flag;                          //ÑÓÊ±Ïà¹Ø±äÁ¿
-u8 Run_Flag=0;  												//À¶ÑÀÒ£¿ØÏà¹Ø±äÁ¿ºÍÔËÐÐ×´Ì¬±êÖ¾Î»
-u8 PS2_ON_Flag=0,Flash_Send;  //CANºÍ´®¿Ú¿ØÖÆÏà¹Ø±äÁ¿
-u8 Turn_Flag;             //CAN·¢ËÍÏà¹Ø±äÁ¿
-float Move_X,Move_Y,Move_Z;   //ÈýÖá½Ç¶ÈºÍXYZÖáÄ¿±êËÙ¶È
-u16 PID_Parameter[10],Flash_Parameter[10];  //FlashÏà¹ØÊý×é
-float	Position_KP=40,Position_KI=0,Position_KD=40;  //Î»ÖÃ¿ØÖÆPID²ÎÊý
-float Velocity_KP=10,Velocity_KI=10;	          //ËÙ¶È¿ØÖÆPID²ÎÊý
-int RC_Velocity=30,RC_Position=3000;         //ÉèÖÃÒ£¿ØµÄËÙ¶ÈºÍÎ»ÖÃÖµ
+u8 Flag_Left,Flag_Right,Flag_Direction=0;   //ï¿½ï¿½ï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½ØµÄ±ï¿½ï¿½ï¿½
+u8 Flag_Stop=1,Flag_Show=0;                 //Í£Ö¹ï¿½ï¿½Ö¾Î»ï¿½ï¿½ ï¿½ï¿½Ê¾ï¿½ï¿½Ö¾Î» Ä¬ï¿½ï¿½Í£Ö¹ ï¿½ï¿½Ê¾ï¿½ï¿½
+int Encoder_A,Encoder_B,Encoder_C,Encoder_D;          //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+long int Position_A,Position_B,Position_C,Position_D,Rate_A,Rate_B,Rate_C,Rate_D; //PIDï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø±ï¿½ï¿½ï¿½
+long int Motor_A,Motor_B,Motor_C,Motor_D;        //ï¿½ï¿½ï¿½PWMï¿½ï¿½ï¿½ï¿½
+long int Target_A,Target_B,Target_C,Target_D;     //ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½Öµ
+int Voltage;                             //ï¿½ï¿½Øµï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ØµÄ±ï¿½ï¿½ï¿½
+float Show_Data_Mb;                      //È«ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Òªï¿½é¿´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½                         
+u8 delay_50,delay_flag;                          //ï¿½ï¿½Ê±ï¿½ï¿½Ø±ï¿½ï¿½ï¿½
+u8 Run_Flag=0;  												//ï¿½ï¿½ï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½Ö¾Î»
+u8 PS2_ON_Flag=0,Flash_Send;  //CANï¿½Í´ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½Ø±ï¿½ï¿½ï¿½
+u8 Turn_Flag;             //CANï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø±ï¿½ï¿½ï¿½
+float Move_X,Move_Y,Move_Z;   //ï¿½ï¿½ï¿½ï¿½Ç¶Èºï¿½XYZï¿½ï¿½Ä¿ï¿½ï¿½ï¿½Ù¶ï¿½
+u16 PID_Parameter[10],Flash_Parameter[10];  //Flashï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+float	Position_KP=40,Position_KI=0,Position_KD=40;  //Î»ï¿½Ã¿ï¿½ï¿½ï¿½PIDï¿½ï¿½ï¿½ï¿½
+float Velocity_KP=10,Velocity_KI=10;	          //ï¿½Ù¶È¿ï¿½ï¿½ï¿½PIDï¿½ï¿½ï¿½ï¿½
+int RC_Velocity=30,RC_Position=3000;         //ï¿½ï¿½ï¿½ï¿½Ò£ï¿½Øµï¿½ï¿½Ù¶Èºï¿½Î»ï¿½ï¿½Öµ
+
+#if 1  // KC_test start
+int main(void)
+{
+	delay_init(168);
+	LED_Init_407();
+	
+	while(1) {
+		delay_ms(300);
+		Led_toggle_407();
+	}
+}
+#else
 int main(void)
   { 
 	  
-		delay_init(168);	    	    //=====ÑÓÊ±º¯Êý³õÊ¼»¯
-	  	uart1_init(128000);             //=====´®¿Ú1³õÊ¼»¯
-		usart2_init(9600);              //=====´®¿Ú2³õÊ¼»¯
-		usart3_init(115200);            //=====´®¿Ú3³õÊ¼»¯ 
-		NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	//=====ÉèÖÃÖÐ¶Ï·Ö×é	
+		delay_init(168);	    	    //=====ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
+	  	uart1_init(128000);             //=====ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Ê¼ï¿½ï¿½
+		usart2_init(9600);              //=====ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½Ê¼ï¿½ï¿½
+		usart3_init(115200);            //=====ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½Ê¼ï¿½ï¿½ 
+		NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	//=====ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï·ï¿½ï¿½ï¿½	
 
-		KEY_Init();                     //=====°´¼ü³õÊ¼»¯
-		LED_Init();                     //=====³õÊ¼»¯Óë LED Á¬½ÓµÄÓ²¼þ½Ó¿Ú
-	  	MiniBalance_PWM_Init(8399,1);  //=====³õÊ¼»¯PWM 10KHZ£¬ÓÃÓÚÇý¶¯µç»ú
-		MiniBalance_Motor_Init(); 		//=====³õÊ¼IO£¬ÓÃÓÚÇý¶¯µç»ú
+		KEY_Init();                     //=====ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
+		LED_Init();                     //=====ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ LED ï¿½ï¿½ï¿½Óµï¿½Ó²ï¿½ï¿½ï¿½Ó¿ï¿½
+	  	MiniBalance_PWM_Init(8399,1);  //=====ï¿½ï¿½Ê¼ï¿½ï¿½PWM 10KHZï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		MiniBalance_Motor_Init(); 		//=====ï¿½ï¿½Ê¼IOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-	  	Encoder_Init_TIM2();            //=====±àÂëÆ÷½Ó¿Ú
-		Encoder_Init_TIM3();            //=====±àÂëÆ÷½Ó¿Ú
-		Encoder_Init_TIM4();            //=====³õÊ¼»¯±àÂëÆ÷C
-		Encoder_Init_TIM5();            //=====³õÊ¼»¯±àÂëÆ÷D
-		if(MODE==0)Run_Flag=1;          //=====Æô¶¯µÄ¹ý³ÌÖÐ£¬¸ù¾ÝÄ£Ê½Ñ¡Ôñ¿ª¹ØÈ·¶¨½øÈëÎ»ÖÃÄ£Ê½»¹ÊÇËÙ¶ÈÄ£Ê½
-		else Run_Flag=0;                //=====Æô¶¯µÄ¹ý³ÌÖÐ£¬¸ù¾ÝÄ£Ê½Ñ¡Ôñ¿ª¹ØÈ·¶¨½øÈëÎ»ÖÃÄ£Ê½»¹ÊÇËÙ¶ÈÄ£Ê½
-		OLED_Init();                    //=====OLED³õÊ¼»¯
-		Adc_Init();                     //=====adc³õÊ¼»¯
+	  	Encoder_Init_TIM2();            //=====ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½
+		Encoder_Init_TIM3();            //=====ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½
+		Encoder_Init_TIM4();            //=====ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½C
+		Encoder_Init_TIM5();            //=====ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½D
+		if(MODE==0)Run_Flag=1;          //=====ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½Ñ¡ï¿½ñ¿ª¹ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½Ä£Ê½
+		else Run_Flag=0;                //=====ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½Ñ¡ï¿½ñ¿ª¹ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½Ä£Ê½
+		OLED_Init();                    //=====OLEDï¿½ï¿½Ê¼ï¿½ï¿½
+		Adc_Init();                     //=====adcï¿½ï¿½Ê¼ï¿½ï¿½
 		delay_ms(500);
-		IIC_Init();                     //=====IIC³õÊ¼»¯
-		MPU6050_initialize();           //=====MPU6050³õÊ¼»¯	
-		DMP_Init();                     //=====³õÊ¼»¯DMP     
-		PS2_Init();						//=====ps2Çý¶¯¶Ë¿Ú³õÊ¼»¯
-		PS2_SetInit();		 			//=====ps2ÅäÖÃ³õÊ¼»¯,ÅäÖÃ¡°ºìÂÌµÆÄ£Ê½¡±£¬²¢Ñ¡ÔñÊÇ·ñ¿ÉÒÔÐÞ¸Ä
-		MiniBalance_EXTI_Init();        //=====MPU6050 5ms¶¨Ê±ÖÐ¶Ï³õÊ¼»¯
-		CAN1_Mode_Init(1,7,6,3,CAN_Mode_Normal);      //=====CAN³õÊ¼»¯   Ä©Î»0=ÆÕÍ¨Ä£Ê½£¬1=»Ø»·Ä£Ê½
+		IIC_Init();                     //=====IICï¿½ï¿½Ê¼ï¿½ï¿½
+		MPU6050_initialize();           //=====MPU6050ï¿½ï¿½Ê¼ï¿½ï¿½	
+		DMP_Init();                     //=====ï¿½ï¿½Ê¼ï¿½ï¿½DMP     
+		PS2_Init();						//=====ps2ï¿½ï¿½ï¿½ï¿½ï¿½Ë¿Ú³ï¿½Ê¼ï¿½ï¿½
+		PS2_SetInit();		 			//=====ps2ï¿½ï¿½ï¿½Ã³ï¿½Ê¼ï¿½ï¿½,ï¿½ï¿½ï¿½Ã¡ï¿½ï¿½ï¿½ï¿½Ìµï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½
+		MiniBalance_EXTI_Init();        //=====MPU6050 5msï¿½ï¿½Ê±ï¿½Ð¶Ï³ï¿½Ê¼ï¿½ï¿½
+		CAN1_Mode_Init(1,7,6,3,CAN_Mode_Normal);      //=====CANï¿½ï¿½Ê¼ï¿½ï¿½   Ä©Î»0=ï¿½ï¿½Í¨Ä£Ê½ï¿½ï¿½1=ï¿½Ø»ï¿½Ä£Ê½
 		delay_ms(500);
     while(1)
 	   {
 		   
-	    if(Flag_Show==0)           //Ê¹ÓÃMiniBalance APPºÍOLEDÏÔÊ¾ÆÁ
+	    if(Flag_Show==0)           //Ê¹ï¿½ï¿½MiniBalance APPï¿½ï¿½OLEDï¿½ï¿½Ê¾ï¿½ï¿½
 			{
 				APP_Show();	              
-				oled_show();             //===ÏÔÊ¾ÆÁ´ò¿ª
+				oled_show();             //===ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 	    }
-    	else                       //Ê¹ÓÃMiniBalanceÉÏÎ»»ú ÉÏÎ»»úÊ¹ÓÃµÄÊ±ºòÐèÒªÑÏ¸ñµÄÊ±Ðò£¬¹Ê´ËÊ±¹Ø±Õapp¼à¿Ø²¿·ÖºÍOLEDÏÔÊ¾ÆÁ
+    	else                       //Ê¹ï¿½ï¿½MiniBalanceï¿½ï¿½Î»ï¿½ï¿½ ï¿½ï¿½Î»ï¿½ï¿½Ê¹ï¿½Ãµï¿½Ê±ï¿½ï¿½ï¿½ï¿½Òªï¿½Ï¸ï¿½ï¿½Ê±ï¿½ò£¬¹Ê´ï¿½Ê±ï¿½Ø±ï¿½appï¿½ï¿½Ø²ï¿½ï¿½Öºï¿½OLEDï¿½ï¿½Ê¾ï¿½ï¿½
   		{
-				DataScope();             //¿ªÆôMiniBalanceÉÏÎ»»ú
+				DataScope();             //ï¿½ï¿½ï¿½ï¿½MiniBalanceï¿½ï¿½Î»ï¿½ï¿½
 			}
-			CAN1_SEND();             //CAN·¢ËÍ		
-			USART3_TX();             //´®¿Ú·¢ËÍ						
+			CAN1_SEND();             //CANï¿½ï¿½ï¿½ï¿½		
+			USART3_TX();             //ï¿½ï¿½ï¿½Ú·ï¿½ï¿½ï¿½						
 			PS2_LX=PS2_AnologData(PSS_LX);
 			PS2_LY=PS2_AnologData(PSS_LY);
 			PS2_RX=PS2_AnologData(PSS_RX);
@@ -72,7 +85,8 @@ int main(void)
 			PS2_KEY=PS2_DataKey();
 			delay_flag=1;	
 			delay_50=0;
-			while(delay_flag);	       //Í¨¹ýMPU6050µÄINTÖÐ¶ÏÊµÏÖµÄ50ms¾«×¼ÑÓÊ±				
+			while(delay_flag);	       //Í¨ï¿½ï¿½MPU6050ï¿½ï¿½INTï¿½Ð¶ï¿½Êµï¿½Öµï¿½50msï¿½ï¿½×¼ï¿½ï¿½Ê±				
 	  } 
 }
-
+#endif
+// KC_TEST end

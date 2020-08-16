@@ -9,4 +9,8 @@
 #define LED PBout(13)  //LED控制引脚
 void LED_Init(void);  //初始化
 void Led_Flash(u16 time);
+
+#define LED_407 PDout(13)  // KC_TEST
+void LED_Init_407(void);  // KC_TEST
+void Led_toggle_407(void);  // KC_TEST
 #endif
